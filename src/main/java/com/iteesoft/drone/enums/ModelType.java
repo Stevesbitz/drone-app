@@ -1,6 +1,6 @@
 package com.iteesoft.drone.enums;
 
-public enum Model {
+public enum ModelType {
     LIGHT_WEIGHT("LIGHTWEIGHT"),
     MIDDLE_WEIGHT("MIDDLEWEIGHT"),
     CRUISER_WEIGHT("CRUISERWEIGHT"),
@@ -8,7 +8,7 @@ public enum Model {
 
     public final String label;
 
-    Model(String label){
+    ModelType(String label){
         this.label = label;
     }
 }

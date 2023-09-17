@@ -1,14 +1,16 @@
 package com.iteesoft.drone.model;
 
 import lombok.*;
-import javax.persistence.Entity;
+import org.springframework.data.mongodb.core.mapping.Document;
+//import javax.persistence.Entity;
 
 @Getter
 @Setter
-@Entity
+//@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Document
 public class Medication extends Base {
     private String name;
     private Integer weight;

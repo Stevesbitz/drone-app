@@ -1,11 +1,14 @@
 package com.iteesoft.drone.service.impl;
 
 import com.iteesoft.drone.dto.DroneDto;
+import com.iteesoft.drone.dto.Response;
 import com.iteesoft.drone.enums.State;
 import com.iteesoft.drone.exceptions.ResourceNotFoundException;
 import com.iteesoft.drone.model.Drone;
+import com.iteesoft.drone.model.LoadData;
 import com.iteesoft.drone.model.Medication;
 import com.iteesoft.drone.repository.DroneRepository;
+import com.iteesoft.drone.repository.LoadDataRepository;
 import com.iteesoft.drone.repository.MedicationRepository;
 import com.iteesoft.drone.service.DroneService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,6 +28,7 @@ public class DroneServiceImpl implements DroneService {
 
     private final DroneRepository droneRepository;
     private final MedicationRepository medicationRepository;
+    private final LoadDataRepository loadRepository;
 
     @Override
     public Drone register(DroneDto droneInfo) {
@@ -31,13 +38,13 @@ public class DroneServiceImpl implements DroneService {
                 .model(droneInfo.getModel())
                 .batteryCapacity(droneInfo.getBatteryCapacity())
                 .weightLimit(droneInfo.getWeightLimit())
-                .state(State.IDLE).items(new ArrayList<>())
+                .state(State.IDLE)
                 .build();
         return droneRepository.save(drone);
     }
 
     @Override
-    public Drone getDroneById(int droneId) {
+    public Drone getDroneById(UUID droneId) {
         var drone = droneRepository.findById(droneId).orElseThrow(()-> new ResourceNotFoundException("Drone not found"));
         log.info("Fetching Drone with id: {} and s/n: {}", droneId, drone.getSerialNumber());
         return drone;
@@ -50,7 +57,7 @@ public class DroneServiceImpl implements DroneService {
         return drone;
     }
 
-    public void decreaseBatteryLevel(int droneId) {
+    public void decreaseBatteryLevel(UUID droneId) {
         final int DECREMENT_VALUE = 5;
         var drone = getDroneById(droneId);
         final int newBatteryLevel = drone.getBatteryCapacity() - DECREMENT_VALUE;
@@ -59,14 +66,14 @@ public class DroneServiceImpl implements DroneService {
         log.info("Drone s/n: {} new battery level, {}%", drone.getSerialNumber(), newBatteryLevel);
     }
 
-    public Medication getMedication(int medicId) {
+    public Medication getMedication(UUID medicId) {
         var medic = medicationRepository.findById(medicId).orElseThrow(()-> new ResourceNotFoundException("Medication not found"));
         log.info("Fetching Medication with id: {} and name: {}", medicId, medic.getName());
         return medic;
     }
 
     @Override
-    public Drone loadWithMedication(int droneId, int medicationId) {
+    public Drone loadWithMedication(UUID droneId, UUID medicationId) {
         var drone = getDroneById(droneId);
         var medication = getMedication(medicationId);
         final int totalWeight = medication.getWeight() + totalLoadWeight(droneId);
@@ -74,7 +81,8 @@ public class DroneServiceImpl implements DroneService {
         log.info("Medication with code: {} is been loaded on Drone s/n: {}", medication.getCode(), drone.getSerialNumber());
 
         if (totalWeight <= drone.getWeightLimit() && drone.getBatteryCapacity() > 25) {
-            drone.getItems().add(medication);
+
+//            drone.getItems().add(medication);
             drone.setState(State.LOADED);
             decreaseBatteryLevel(droneId);
             droneRepository.save(drone);
@@ -86,9 +94,19 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public List<Medication> viewDroneItems(int droneId) {
-        Drone drone = droneRepository.findById(droneId).orElseThrow(()-> new ResourceNotFoundException("Drone not found"));
-        return drone.getItems();
+    public Response viewDroneItems(UUID droneId) {
+        List<LoadData> loadData = loadRepository.findAllByDroneId(droneId);
+        return Response.builder().success(true).data(loadData).build();
+    }
+
+    private List<LoadData.LoadInfo> getUndeliveredItems(UUID droneId) {
+        List<LoadData> loadData = loadRepository.findAllByDroneId(droneId);
+        List<LoadData.LoadInfo> loadInfo = new ArrayList<>();
+        if (!loadData.isEmpty()) {
+            loadData.forEach(ld -> ld.getItems().stream().filter(med -> !med.isDelivered()).map(loadInfo::add).close());
+        }
+
+        return loadInfo;
     }
 
     @Override
@@ -98,7 +116,7 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public String viewDroneBattery(int droneId) {
+    public String viewDroneBattery(UUID droneId) {
         Drone drone = droneRepository.findById(droneId).orElseThrow(()-> new ResourceNotFoundException("Drone not found"));
         var batteryCapacity = drone.getBatteryCapacity();
         log.info("Drone s/n: {}, Battery level: {}%", drone.getSerialNumber(), batteryCapacity);
@@ -126,12 +144,13 @@ public class DroneServiceImpl implements DroneService {
         }
     }
 
-    public int totalLoadWeight(int droneId) {
-        List<Medication> medications = viewDroneItems(droneId);
-        int totalWeight = 0;
-        for (Medication m : medications) {
-            totalWeight += m.getWeight();
-        }
-        return totalWeight;
+    private int totalLoadWeight(UUID droneId) {
+        List<LoadData.LoadInfo> undelivered = getUndeliveredItems(droneId);
+        List<Medication> med = new ArrayList<>();
+        undelivered.forEach(m -> {
+            Optional<Medication> medication = medicationRepository.findById(m.getMedicationId());
+            medication.ifPresent(med::add);
+        });
+        return med.stream().map(Medication::getWeight).reduce(0, (a, b) -> a);
     }
 }

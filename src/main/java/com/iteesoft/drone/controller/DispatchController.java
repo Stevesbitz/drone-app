@@ -1,28 +1,28 @@
 package com.iteesoft.drone.controller;
 
 import com.iteesoft.drone.dto.DroneDto;
+import com.iteesoft.drone.dto.Response;
 import com.iteesoft.drone.model.Drone;
 import com.iteesoft.drone.model.Medication;
 import com.iteesoft.drone.service.DroneService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
+import java.util.UUID;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("api/v1/drones")
+@RequiredArgsConstructor
 public class DispatchController {
 
-    @Autowired
-    private DroneService droneService;
+    private final DroneService droneService;
 
     @GetMapping("/")
     public ResponseEntity<?> viewAll() {
-        return new ResponseEntity<>(droneService.viewAllDrones(), OK);
+        return ResponseEntity.ok(droneService.viewAllDrones());
     }
 
     @PostMapping("/register")
@@ -31,12 +31,12 @@ public class DispatchController {
     }
 
     @PostMapping("/{droneId}/load/{medicId}")
-    public ResponseEntity<Drone> loadDrone(@PathVariable int droneId, @PathVariable int medicId) {
+    public ResponseEntity<Drone> loadDrone(@PathVariable UUID droneId, @PathVariable UUID medicId) {
         return new ResponseEntity<>(droneService.loadWithMedication(droneId, medicId), OK);
     }
 
     @GetMapping("/id/{droneId}")
-    public ResponseEntity<Drone> viewInfo(@PathVariable int droneId) {
+    public ResponseEntity<Drone> viewInfo(@PathVariable UUID droneId) {
         return new ResponseEntity<>(droneService.getDroneById(droneId), OK);
     }
 
@@ -46,8 +46,8 @@ public class DispatchController {
     }
 
     @GetMapping("/viewLoad/{droneId}")
-    public ResponseEntity<List<Medication>> viewLoadedMedication(@PathVariable int droneId) {
-        return new ResponseEntity<>(droneService.viewDroneItems(droneId), OK);
+    public ResponseEntity<Response> viewLoadedMedication(@PathVariable UUID droneId) {
+        return ResponseEntity.ok(droneService.viewDroneItems(droneId));
     }
 
     @GetMapping("/viewAvailable")
@@ -56,7 +56,7 @@ public class DispatchController {
     }
 
     @GetMapping("/viewBattery/{droneId}")
-    public ResponseEntity<String> viewBattery(@PathVariable int droneId) {
+    public ResponseEntity<String> viewBattery(@PathVariable UUID droneId) {
         return new ResponseEntity<>(droneService.viewDroneBattery(droneId), OK);
     }
 

@@ -1,22 +1,25 @@
 package com.iteesoft.drone.service;
 
 import com.iteesoft.drone.dto.DroneDto;
+import com.iteesoft.drone.dto.Response;
 import com.iteesoft.drone.model.Drone;
+import com.iteesoft.drone.model.LoadData;
 import com.iteesoft.drone.model.Medication;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface DroneService {
 
-    Drone getDroneById(int droneId);
+    Drone getDroneById(UUID droneId);
     Drone register(DroneDto droneInfo);
 
     Drone getDrone(String serialNumber);
 
-    Drone loadWithMedication(int droneId, int medicationId);
-    List<Medication> viewDroneItems(int droneId);
+    Drone loadWithMedication(UUID droneId, UUID medicationId);
+    Response viewDroneItems(UUID droneId);
     List<Drone> viewAvailableDrone();
-    String viewDroneBattery(int droneId);
+    String viewDroneBattery(UUID droneId);
     List<Medication> viewAllMedications();
     List<Drone> viewAllDrones();
 }
