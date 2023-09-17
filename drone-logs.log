@@ -27,3 +27,83 @@
 2021-12-16 11:24:42.430  INFO 22517 --- [SpringApplicationShutdownHook] .SchemaDropperImpl$DelayedDropActionImpl : HHH000477: Starting delayed evictData of schema as part of SessionFactory shut-down'
 2021-12-16 11:24:42.462  INFO 22517 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2021-12-16 11:24:42.471  INFO 22517 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-09-17 17:22:38.848  INFO 11906 --- [main] com.iteesoft.drone.DroneApplication      : Starting DroneApplication using Java 17.0.8 on Adebayos-MacBook-Pro.local with PID 11906 (/Users/iteesoft/Downloads/personal/drone-app/target/classes started by iteesoft in /Users/iteesoft/Downloads/personal/drone-app)
+2023-09-17 17:22:38.849  INFO 11906 --- [main] com.iteesoft.drone.DroneApplication      : No active profile set, falling back to default profiles: default
+2023-09-17 17:22:39.070  INFO 11906 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-17 17:22:39.088  INFO 11906 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 16 ms. Found 3 MongoDB repository interfaces.
+2023-09-17 17:22:39.253  INFO 11906 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-17 17:22:39.257  INFO 11906 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-17 17:22:39.257  INFO 11906 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.55]
+2023-09-17 17:22:39.282  INFO 11906 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-09-17 17:22:39.283  INFO 11906 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 418 ms
+2023-09-17 17:22:39.338  INFO 11906 --- [main] org.mongodb.driver.cluster               : Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+2023-09-17 17:22:39.365  INFO 11906 --- [cluster-ClusterId{value='650727cf4d33fd78074ad594', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:14}] to localhost:27017
+2023-09-17 17:22:39.365  INFO 11906 --- [cluster-rtt-ClusterId{value='650727cf4d33fd78074ad594', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:15}] to localhost:27017
+2023-09-17 17:22:39.366  INFO 11906 --- [cluster-ClusterId{value='650727cf4d33fd78074ad594', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=7647791}
+2023-09-17 17:22:39.749  INFO 11906 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-17 17:22:39.755  INFO 11906 --- [main] com.iteesoft.drone.DroneApplication      : Started DroneApplication in 1.028 seconds (JVM running for 6.258)
+2023-09-17 17:22:39.763  INFO 11906 --- [main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-09-17 17:22:39.769 ERROR 11906 --- [main] o.s.boot.SpringApplication               : Application run failed
+
+java.lang.IllegalStateException: Failed to execute CommandLineRunner
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:770) ~[spring-boot-2.6.1.jar:2.6.1]
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:751) ~[spring-boot-2.6.1.jar:2.6.1]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:309) ~[spring-boot-2.6.1.jar:2.6.1]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1301) ~[spring-boot-2.6.1.jar:2.6.1]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1290) ~[spring-boot-2.6.1.jar:2.6.1]
+	at com.iteesoft.drone.DroneApplication.main(DroneApplication.java:24) ~[classes/:na]
+Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: Cannot autogenerate id of type java.util.UUID for entity of type com.iteesoft.drone.model.Medication!
+	at org.springframework.data.mongodb.core.EntityOperations$MappedEntity.assertUpdateableIdIfNotSet(EntityOperations.java:618) ~[spring-data-mongodb-3.3.0.jar:3.3.0]
+	at org.springframework.data.mongodb.core.MongoTemplate.doInsert(MongoTemplate.java:1252) ~[spring-data-mongodb-3.3.0.jar:3.3.0]
+	at org.springframework.data.mongodb.core.MongoTemplate.insert(MongoTemplate.java:1174) ~[spring-data-mongodb-3.3.0.jar:3.3.0]
+	at org.springframework.data.mongodb.repository.support.SimpleMongoRepository.save(SimpleMongoRepository.java:95) ~[spring-data-mongodb-3.3.0.jar:3.3.0]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:289) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:137) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:121) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:529) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:285) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:638) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.13.jar:5.3.13]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:163) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:138) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.13.jar:5.3.13]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:80) ~[spring-data-commons-2.6.0.jar:2.6.0]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.13.jar:5.3.13]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-5.3.13.jar:5.3.13]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.13.jar:5.3.13]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.13.jar:5.3.13]
+	at jdk.proxy2/jdk.proxy2.$Proxy76.save(Unknown Source) ~[na:na]
+	at com.iteesoft.drone.DroneApplication.lambda$run$0(DroneApplication.java:29) ~[classes/:na]
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:767) ~[spring-boot-2.6.1.jar:2.6.1]
+	... 5 common frames omitted
+
+2023-09-17 17:29:34.419  INFO 11949 --- [main] com.iteesoft.drone.DroneApplication      : Starting DroneApplication using Java 17.0.8 on Adebayos-MacBook-Pro.local with PID 11949 (/Users/iteesoft/Downloads/personal/drone-app/target/classes started by iteesoft in /Users/iteesoft/Downloads/personal/drone-app)
+2023-09-17 17:29:34.420  INFO 11949 --- [main] com.iteesoft.drone.DroneApplication      : No active profile set, falling back to default profiles: default
+2023-09-17 17:29:34.650  INFO 11949 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2023-09-17 17:29:34.669  INFO 11949 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 17 ms. Found 3 MongoDB repository interfaces.
+2023-09-17 17:29:34.825  INFO 11949 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-09-17 17:29:34.829  INFO 11949 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-09-17 17:29:34.830  INFO 11949 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.55]
+2023-09-17 17:29:34.855  INFO 11949 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-09-17 17:29:34.855  INFO 11949 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 416 ms
+2023-09-17 17:29:34.909  INFO 11949 --- [main] org.mongodb.driver.cluster               : Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+2023-09-17 17:29:34.936  INFO 11949 --- [cluster-ClusterId{value='6507296e71cefa37e0b06ce0', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:1, serverValue:17}] to localhost:27017
+2023-09-17 17:29:34.936  INFO 11949 --- [cluster-rtt-ClusterId{value='6507296e71cefa37e0b06ce0', description='null'}-localhost:27017] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:2, serverValue:16}] to localhost:27017
+2023-09-17 17:29:34.936  INFO 11949 --- [cluster-ClusterId{value='6507296e71cefa37e0b06ce0', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=7785500}
+2023-09-17 17:29:35.314  INFO 11949 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-09-17 17:29:35.319  INFO 11949 --- [main] com.iteesoft.drone.DroneApplication      : Started DroneApplication in 1.017 seconds (JVM running for 6.236)
+2023-09-17 17:29:35.342  INFO 11949 --- [main] org.mongodb.driver.connection            : Opened connection [connectionId{localValue:3, serverValue:18}] to localhost:27017
+2023-09-17 17:30:08.512  INFO 11949 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-09-17 17:30:08.512  INFO 11949 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-09-17 17:30:08.513  INFO 11949 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2023-09-17 17:30:15.322  INFO 11949 --- [scheduling-1] c.i.drone.service.impl.DroneServiceImpl  : Checking drones Battery level...
+2023-09-17 17:30:15.361  INFO 11949 --- [scheduling-1] c.i.drone.service.impl.DroneServiceImpl  : Drone s/n: A07ughfd54, Battery level: 50%, Status: IDLE
+2023-09-17 17:30:15.362  INFO 11949 --- [scheduling-1] c.i.drone.service.impl.DroneServiceImpl  : Drone s/n: D46hftfd22, Battery level: 27%, Status: DELIVERING
+2023-09-17 17:30:15.362  INFO 11949 --- [scheduling-1] c.i.drone.service.impl.DroneServiceImpl  : Drone s/n: S18uydfe43, Battery level: 70%, Status: LOADED
+2023-09-17 17:30:26.552  INFO 11949 --- [http-nio-8080-exec-3] c.i.drone.service.impl.DroneServiceImpl  : Fetching all registered Drones... 
