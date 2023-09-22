@@ -3,9 +3,7 @@ package com.iteesoft.drone.service;
 import com.iteesoft.drone.dto.DroneDto;
 import com.iteesoft.drone.dto.Response;
 import com.iteesoft.drone.model.Drone;
-import com.iteesoft.drone.model.LoadData;
 import com.iteesoft.drone.model.Medication;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -21,5 +19,5 @@ public interface DroneService {
     List<Drone> viewAvailableDrone();
     String viewDroneBattery(UUID droneId);
     List<Medication> viewAllMedications();
-    List<Drone> viewAllDrones();
+    Response viewAllDrones();
 }

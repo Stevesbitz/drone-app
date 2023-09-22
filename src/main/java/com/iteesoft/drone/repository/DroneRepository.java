@@ -14,4 +14,6 @@ public interface DroneRepository extends MongoRepository<Drone, UUID> {
 //    @Query(value = "select * from drone where state = 'IDLE'", nativeQuery = true)
     @Query("from Drone d where d.state='IDLE'")
     List<Drone> findAvailableDrones();
+
+    boolean existsBySerialNumber(String serialNumber);
 }

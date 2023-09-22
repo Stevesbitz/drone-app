@@ -3,6 +3,7 @@ package com.iteesoft.drone.service.impl;
 import com.iteesoft.drone.dto.DroneDto;
 import com.iteesoft.drone.dto.Response;
 import com.iteesoft.drone.enums.State;
+import com.iteesoft.drone.exceptions.AppException;
 import com.iteesoft.drone.exceptions.ResourceNotFoundException;
 import com.iteesoft.drone.model.Drone;
 import com.iteesoft.drone.model.LoadData;
@@ -13,12 +14,11 @@ import com.iteesoft.drone.repository.MedicationRepository;
 import com.iteesoft.drone.service.DroneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,30 +29,37 @@ public class DroneServiceImpl implements DroneService {
     private final DroneRepository droneRepository;
     private final MedicationRepository medicationRepository;
     private final LoadDataRepository loadRepository;
+    static final String NOT_FOUND = "%s not found";
+    static final String DRONE = "Drone";
 
     @Override
     public Drone register(DroneDto droneInfo) {
         log.info("Registering Drone with s/n: {}", droneInfo.getSerialNumber());
+
+        if (droneRepository.existsBySerialNumber(droneInfo.getSerialNumber())) {
+            throw new AppException("Drone with serial number exist");
+        }
+
         Drone drone = Drone.builder()
                 .serialNumber(droneInfo.getSerialNumber())
                 .model(droneInfo.getModel())
                 .batteryCapacity(droneInfo.getBatteryCapacity())
                 .weightLimit(droneInfo.getWeightLimit())
-                .state(State.IDLE)
                 .build();
         return droneRepository.save(drone);
     }
 
     @Override
     public Drone getDroneById(UUID droneId) {
-        var drone = droneRepository.findById(droneId).orElseThrow(()-> new ResourceNotFoundException("Drone not found"));
+        var drone = droneRepository.findById(droneId).orElseThrow(()-> new ResourceNotFoundException(String.format(NOT_FOUND, DRONE)));
         log.info("Fetching Drone with id: {} and s/n: {}", droneId, drone.getSerialNumber());
         return drone;
     }
 
     @Override
+    @Cacheable(value="drones", key="#serialNumber")
     public Drone getDrone(String serialNumber) {
-        var drone = droneRepository.findBySerialNumber(serialNumber).orElseThrow(()-> new ResourceNotFoundException("Drone not found"));
+        var drone = droneRepository.findBySerialNumber(serialNumber).orElseThrow(()-> new ResourceNotFoundException(String.format(NOT_FOUND, DRONE)));
         log.info("Fetching Drone with s/n: {}", drone.getSerialNumber());
         return drone;
     }
@@ -82,7 +89,6 @@ public class DroneServiceImpl implements DroneService {
 
         if (totalWeight <= drone.getWeightLimit() && drone.getBatteryCapacity() > 25) {
 
-//            drone.getItems().add(medication);
             drone.setState(State.LOADED);
             decreaseBatteryLevel(droneId);
             droneRepository.save(drone);
@@ -117,7 +123,7 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     public String viewDroneBattery(UUID droneId) {
-        Drone drone = droneRepository.findById(droneId).orElseThrow(()-> new ResourceNotFoundException("Drone not found"));
+        Drone drone = droneRepository.findById(droneId).orElseThrow(()-> new ResourceNotFoundException(String.format(NOT_FOUND, DRONE)));
         var batteryCapacity = drone.getBatteryCapacity();
         log.info("Drone s/n: {}, Battery level: {}%", drone.getSerialNumber(), batteryCapacity);
         return batteryCapacity+"%";
@@ -129,10 +135,13 @@ public class DroneServiceImpl implements DroneService {
         return medicationRepository.findAll();
     }
 
+    @Cacheable("drones")
     @Override
-    public List<Drone> viewAllDrones() {
+    public Response viewAllDrones() {
         log.info("Fetching all registered Drones... ");
-        return droneRepository.findAll();
+        List<Drone> drones = droneRepository.findAll();
+        return Response.builder().success(true)
+                .data(Map.of("data", drones)).build();
     }
 
     @Scheduled(initialDelay = 40000, fixedRate = 500000) // cron = "0 1 1 * * ?"
