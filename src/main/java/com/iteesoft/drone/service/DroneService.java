@@ -20,4 +20,7 @@ public interface DroneService {
     String viewDroneBattery(UUID droneId);
     List<Medication> viewAllMedications();
     Response viewAllDrones();
+    List<Drone> viewAllDrones();
+
+    int totalLoadWeight(int droneId);
 }
