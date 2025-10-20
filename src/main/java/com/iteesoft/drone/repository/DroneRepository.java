@@ -16,4 +16,6 @@ public interface DroneRepository extends MongoRepository<Drone, UUID> {
     List<Drone> findAvailableDrones();
 
     boolean existsBySerialNumber(String serialNumber);
+    
+    int updateAllById(UUID id);
 }

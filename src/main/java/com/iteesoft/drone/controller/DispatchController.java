@@ -21,7 +21,7 @@ public class DispatchController {
     private final DroneService droneService;
 
     @GetMapping("/")
-    public ResponseEntity<?> viewAll() {
+    public ResponseEntity<Object> viewAll() {
         return ResponseEntity.ok(droneService.viewAllDrones());
     }
 
